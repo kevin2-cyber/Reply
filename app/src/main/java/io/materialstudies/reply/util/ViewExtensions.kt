@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import android.widget.TextView
 
+@Suppress("DEPRECATION")
 fun TextView.setTextAppearanceCompat(
     context: Context,
     resId: Int
