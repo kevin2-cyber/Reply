@@ -10,14 +10,17 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.activity.OnBackPressedCallback
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_HIDDEN
-import com.google.android.material.bottomsheet.BottomSheetBehavior.from
+import com.google.android.material.bottomsheet.BottomSheetBehavior.*
 import com.google.android.material.shape.MaterialShapeDrawable
 import kotlin.LazyThreadSafetyMode.NONE
 import io.materialstudies.reply.R
+import io.materialstudies.reply.data.Account
+import io.materialstudies.reply.data.AccountStore
 import io.materialstudies.reply.databinding.FragmentBottomNavDrawerBinding
+import io.materialstudies.reply.util.lerp
 import io.materialstudies.reply.util.themeColor
 import io.materialstudies.reply.util.themeInterpolator
+import kotlin.math.abs
 
 /**
  * A [Fragment] which acts as a bottom navigation drawer.
@@ -214,7 +217,162 @@ class BottomNavDrawerFragment :
             val adapter = NavigationAdapter(this@BottomNavDrawerFragment)
 
             navRecyclerView.adapter = adapter
-            NavigationModel
+            NavigationModel.setNavigationMenuItemChecked(0)
+
+            val accountAdapter = AccountAdapter(this@BottomNavDrawerFragment)
+            accountRecyclerView.adapter = accountAdapter
+            AccountStore.userAccounts.observe(viewLifecycleOwner) {
+                accountAdapter.submitList(it)
+                currentUserAccount = it.first {
+                    acc ->
+                    acc.isCurrentAccount
+                }
+            }
+        }
+    }
+
+    fun toggle() {
+        when {
+            sandwichState == SandwichState.OPEN -> toggleSandwich()
+            behavior.state == STATE_HIDDEN -> open()
+            behavior.state == STATE_HIDDEN
+                    || behavior.state == STATE_HALF_EXPANDED
+                    || behavior.state == STATE_EXPANDED
+                    || behavior.state == STATE_COLLAPSED -> close()
+        }
+    }
+
+    fun open() {
+        behavior.state = STATE_HALF_EXPANDED
+    }
+
+    fun close() {
+        behavior.state = STATE_HIDDEN
+    }
+
+    fun addOnSlideAction(action: OnSlideAction) {
+        bottomSheetCallback.addOnSlideAction(action)
+    }
+
+    fun addOnStateChangedAction(action: OnStateChangedAction) {
+        bottomSheetCallback.addOnStateChangedAction(action)
+    }
+
+    fun addNavigationListener(listener: NavigationAdapter.NavigationAdapterListener) {
+        navigationListeners.add(listener)
+    }
+
+    /**
+     * Add actions to be run when the slide offset (animation progress) or the sandwiching account
+     * picker has changed.
+     */
+    fun addOnSandwichSlideAction(action: OnSandwichSlideAction) {
+        sandwichSlideActions.add(action)
+    }
+
+    fun onNavMenuItemClicked(item: NavigationModelItem.NavMenuItem) {
+        NavigationModel.setNavigationMenuItemChecked(item.id)
+        close()
+        navigationListeners.forEach {
+            it.onNavMenuItemClicked(item)
+        }
+    }
+
+    override fun onNavEmailFolderClicked(folder: NavigationModelItem.NavEmailFolder) {
+        navigationListeners.forEach {
+            it.onNavEmailFolderClicked(folder)
+        }
+    }
+
+    override fun onAccountClicked(account: Account) {
+        AccountStore.setCurrentUserAccount(account.id)
+        toggleSandwich()
+    }
+
+    /**
+     * Open or close the account picker "sandwich".
+     */
+    private fun toggleSandwich() {
+        val initialProgress = sandwichProgress
+        val newProgress = when (sandwichState) {
+            SandwichState.CLOSED -> {
+                // Store the original top location of the background container so we can animate
+                // the delta between its original top position and the top position needed to just
+                // show the account picker RecyclerView, and back again.
+                binding.backgroundContainer.setTag(
+                    R.id.tag_view_top_snapshot,
+                    binding.backgroundContainer.top
+                )
+                1F
+            }
+            SandwichState.OPEN -> 0F
+            SandwichState.SETTLING -> return
+        }
+        sandwichAnim?.cancel()
+        sandwichAnim = ValueAnimator.ofFloat(initialProgress, newProgress).apply {
+            addUpdateListener {
+                sandwichProgress = animatedValue as Float
+            }
+            interpolator = sandwichInterp
+            duration = (abs(newProgress - initialProgress) *
+                    resources.getInteger(R.integer.reply_motion_duration_medium)).toLong()
+        }
+        sandwichAnim?.start()
+    }
+
+    /**
+     * Called each time the value of [sandwichProgress] changes. [progress] is the state of the
+     * sandwiching, with 0F being the default [SandwichState.CLOSED] state and 1F being the
+     * [SandwichState.OPEN] state.
+     */
+    private fun onSandwichProgressChanged(progress: Float) {
+        binding.run {
+            val navProgress = lerp(0F, 1F, 0F, 0.5F, progress)
+            val accProgress = lerp(0F, 1F, 0.5F, 1F, progress)
+
+            foregroundContainer.translationY =
+                (binding.foregroundContainer.height * 0.15F) * navProgress
+            profileImageView.scaleX = 1F - navProgress
+            profileImageView.scaleY = 1F - navProgress
+            profileImageView.alpha = 1F - navProgress
+            foregroundContainer.alpha = 1F - navProgress
+            accountRecyclerView.alpha = accProgress
+
+            foregroundShapeDrawable.interpolation = 1F - navProgress
+
+            // Animate the translationY of the backgroundContainer so just the account picker is
+            // peeked above the BottomAppBar.
+            backgroundContainer.translationY = progress *
+                    ((scrimView.bottom - accountRecyclerView.height
+                            - resources.getDimension(R.dimen.bottom_app_bar_height)) -
+                            (backgroundContainer.getTag(R.id.tag_view_top_snapshot) as Int))
+        }
+
+        // Call any actions which have been registered to run on progress changes.
+        sandwichSlideActions.forEach{
+            it.onSlide(progress)
+        }
+    }
+
+    /**
+     * Called when the [SandwichState] of the sandwiching account picker has changed.
+     */
+    private fun onSandwichStateChanged(state: SandwichState) {
+        // Change visibility/clickability of views which obstruct user interaction with
+        // the account list.
+        when (state) {
+            SandwichState.OPEN -> {
+                binding.run {
+                    foregroundContainer.visibility = View.GONE
+                    profileImageView.isClickable = false
+                }
+            }
+            else -> {
+                binding.run {
+                    foregroundContainer.visibility = View.VISIBLE
+                    profileImageView.isClickable = true
+                }
+            }
         }
     }
         }
