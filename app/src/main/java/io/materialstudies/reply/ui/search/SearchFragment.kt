@@ -11,6 +11,8 @@ import io.materialstudies.reply.R
 import io.materialstudies.reply.data.SearchSuggestion
 import io.materialstudies.reply.data.SearchSuggestionStore
 import io.materialstudies.reply.databinding.FragmentSearchBinding
+import io.materialstudies.reply.databinding.SearchSuggestionItemBinding
+import io.materialstudies.reply.databinding.SearchSuggestionTitleBinding
 
 class SearchFragment : Fragment() {
 
