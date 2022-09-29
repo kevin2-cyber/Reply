@@ -193,7 +193,7 @@ class BottomNavDrawerFragment :
                     ScrollToTopStateAction(navRecyclerView)
                 )
                 // Close the sandwiching account picker if open
-                addonStateChangedAction(object : OnStateChangedAction {
+                addOnStateChangedAction(object : OnStateChangedAction {
                     override fun onStateChanged(sheet: View, newState: Int) {
                         sandwichAnim?.cancel()
                         sandwichProgress = 0F
@@ -270,7 +270,7 @@ class BottomNavDrawerFragment :
         sandwichSlideActions.add(action)
     }
 
-    fun onNavMenuItemClicked(item: NavigationModelItem.NavMenuItem) {
+    override fun onNavMenuItemClicked(item: NavigationModelItem.NavMenuItem) {
         NavigationModel.setNavigationMenuItemChecked(item.id)
         close()
         navigationListeners.forEach {

@@ -17,7 +17,7 @@ class NavigationAdapter(
     NavigationModelItem.NavModelItemDiff
 ) {
     interface NavigationAdapterListener {
-        fun onMenuItemClicked(item: NavigationModelItem.NavMenuItem)
+        fun onNavMenuItemClicked(item: NavigationModelItem.NavMenuItem)
         fun onNavEmailFolderClicked(folder: NavigationModelItem.NavEmailFolder)
     }
 
