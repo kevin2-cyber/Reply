@@ -103,7 +103,7 @@ class ReboundingSwipeActionCallback : ItemTouchHelper.SimpleCallback(
 
         val itemView = viewHolder.itemView
         val currentSwipePercentage = abs(dX) / itemView.width
-        viewHolder.onReboundOffsetChanged(
+        viewHolder.onReboundOffSetChanged(
             currentSwipePercentage,
             trueSwipeThreshold,
             currentTargetHasMetThresholdOnce
