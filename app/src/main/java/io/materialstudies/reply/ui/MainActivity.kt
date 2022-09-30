@@ -24,7 +24,8 @@ import kotlin.LazyThreadSafetyMode.*
 
 class MainActivity : AppCompatActivity(),
                     Toolbar.OnMenuItemClickListener,
-                    NavController.OnDestinationChangedListener{
+                    NavController.OnDestinationChangedListener,
+                    NavigationAdapter.NavigationAdapterListener{
 
     private val binding: ActivityMainBinding by contentView(R.layout.activity_main)
     private val bottomNavDrawer: BottomNavDrawerFragment by lazy(NONE) {
@@ -202,7 +203,7 @@ class MainActivity : AppCompatActivity(),
             // the fab and bottom app bar until after it's exit animation finishes.
             bottomAppBar.animate().setListener(object : AnimatorListenerAdapter() {
                 var isCanceled = false
-                override fun onAnimationEnd(animation: Animator?) {
+                override fun onAnimationEnd(animation: Animator) {
                     if (isCanceled) return
 
                     // Hide the BottomAppBar to avoid it showing above the keyboard
@@ -210,7 +211,8 @@ class MainActivity : AppCompatActivity(),
                     bottomAppBar.visibility = View.GONE
                     fab.visibility = View.INVISIBLE
                 }
-                override fun onAnimationCancel(animation: Animator?) {
+
+                override fun onAnimationCancel(animation: Animator) {
                     isCanceled = true
                 }
             })
