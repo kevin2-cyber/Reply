@@ -9,9 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.activity.OnBackPressedCallback
+import androidx.lifecycle.observe
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetBehavior.*
 import com.google.android.material.shape.MaterialShapeDrawable
+import com.google.android.material.R.attr.bottomSheetStyle
 import kotlin.LazyThreadSafetyMode.NONE
 import io.materialstudies.reply.R
 import io.materialstudies.reply.data.Account
@@ -63,12 +65,12 @@ class BottomNavDrawerFragment :
     private val navigationListeners: MutableList<NavigationAdapter.NavigationAdapterListener> =
         mutableListOf()
 
-    private val backgroundShapeDrawable; MaterialShapeDrawable by lazy(NONE) {
+    private val backgroundShapeDrawable: MaterialShapeDrawable by lazy(NONE) {
         val backgroundContext = binding.backgroundContainer.context
         MaterialShapeDrawable(
             backgroundContext,
             null,
-            R.attr.bottomSheetStyle,
+            bottomSheetStyle,
             0
         ).apply {
             fillColor = ColorStateList.valueOf(
@@ -86,7 +88,7 @@ class BottomNavDrawerFragment :
         MaterialShapeDrawable(
             foregroundContext,
             null,
-            R.attr.bottomSheetStyle,
+            bottomSheetStyle,
             0
         ).apply {
             fillColor = ColorStateList.valueOf(
