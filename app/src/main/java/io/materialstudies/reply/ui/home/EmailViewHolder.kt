@@ -8,6 +8,7 @@ import io.materialstudies.reply.databinding.EmailItemLayoutBinding
 import io.materialstudies.reply.util.themeStyle
 import com.google.android.material.R.attr.textAppearanceHeadline4
 import com.google.android.material.R.attr.textAppearanceHeadline5
+import io.materialstudies.reply.ui.common.EmailAttachmentAdapter
 import io.materialstudies.reply.util.setTextAppearanceCompat
 import kotlin.math.abs
 
@@ -16,7 +17,8 @@ class EmailViewHolder(
     listener: EmailAdapter.EmailAdapterListener
 ) : RecyclerView.ViewHolder(binding.root), ReboundingSwipeActionCallback.ReboundableViewHolder{
     private val attachmentAdapter = object : EmailAttachmentAdapter() {
-        override fun getLayoutIdForPositiion(position: Int): Int{
+
+        override fun getLayoutIdForPosition(position: Int): Int {
             return R.layout.email_attachment_preview_item_layout
         }
     }
