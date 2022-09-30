@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import io.materialstudies.reply.databinding.NavDividerItemLayoutBinding
+import io.materialstudies.reply.databinding.NavEmailFolderItemLayoutBinding
 import io.materialstudies.reply.databinding.NavMenuItemLayoutBinding
 
 private const val VIEW_TYPE_NAV_MENU_ITEM = 4
@@ -45,6 +46,14 @@ class NavigationAdapter(
             )
             VIEW_TYPE_NAV_DIVIDER -> NavigationViewHolder.NavDividerViewHolder(
                 NavDividerItemLayoutBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                ),
+                listener
+            )
+            VIEW_TYPE_NAV_EMAIL_FOLDER_ITEM -> NavigationViewHolder.EmailFolderViewHolder(
+                NavEmailFolderItemLayoutBinding.inflate(
                     LayoutInflater.from(parent.context),
                     parent,
                     false

@@ -26,6 +26,20 @@ sealed class NavigationViewHolder<T: NavigationModelItem>(
     }
 
     class NavDividerViewHolder(
+        private val binding: NavDividerItemLayoutBinding,
+        private val listener: NavigationAdapter.NavigationAdapterListener
+    ) : NavigationViewHolder<NavigationModelItem.NavEmailFolder>(binding.root) {
+
+        override fun bind(navItem: NavigationModelItem.NavEmailFolder) {
+            binding.run {
+                navEmailFolder = navItem
+                navListener = listener
+                executePendingBindings()
+            }
+        }
+    }
+
+    class EmailFolderViewHolder(
         private val binding: NavEmailFolderItemLayoutBinding,
         private val listener: NavigationAdapter.NavigationAdapterListener
     ) : NavigationViewHolder<NavigationModelItem.NavEmailFolder>(binding.root) {
