@@ -50,7 +50,6 @@ class NavigationAdapter(
                     parent,
                     false
                 ),
-                listener
             )
             VIEW_TYPE_NAV_EMAIL_FOLDER_ITEM -> NavigationViewHolder.EmailFolderViewHolder(
                 NavEmailFolderItemLayoutBinding.inflate(
