@@ -46,7 +46,7 @@ sealed class NavigationModelItem {
             return when {
                 oldItem is NavMenuItem && newItem is NavMenuItem ->
                     oldItem.id == newItem.id
-                oldItem is NavEmailFolder && newItem is NavMenuItem ->
+                oldItem is NavEmailFolder && newItem is NavEmailFolder ->
                     EmailFolderDiff.areItemsTheSame(oldItem.emailFolder, newItem.emailFolder)
                 else -> oldItem == newItem
             }
