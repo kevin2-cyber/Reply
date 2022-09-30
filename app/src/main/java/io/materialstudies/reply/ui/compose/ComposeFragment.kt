@@ -14,6 +14,7 @@ import io.materialstudies.reply.data.Account
 import io.materialstudies.reply.data.AccountStore
 import io.materialstudies.reply.data.Email
 import io.materialstudies.reply.data.EmailStore
+import io.materialstudies.reply.databinding.ComposeRecipientChipBinding
 import io.materialstudies.reply.databinding.FragmentComposeBinding
 import kotlin.LazyThreadSafetyMode.NONE
 
