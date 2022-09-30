@@ -17,8 +17,12 @@ import androidx.navigation.findNavController
 import io.materialstudies.reply.R
 import io.materialstudies.reply.data.EmailStore
 import io.materialstudies.reply.databinding.ActivityMainBinding
+import io.materialstudies.reply.ui.compose.ComposeFragmentDirections
+import io.materialstudies.reply.ui.email.EmailFragmentArgs
+import io.materialstudies.reply.ui.home.HomeFragmentDirections
 import io.materialstudies.reply.ui.home.Mailbox
 import io.materialstudies.reply.ui.nav.*
+import io.materialstudies.reply.ui.search.SearchFragmentDirections
 import io.materialstudies.reply.util.contentView
 import kotlin.LazyThreadSafetyMode.*
 
