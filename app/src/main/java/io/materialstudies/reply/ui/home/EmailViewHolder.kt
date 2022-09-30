@@ -62,7 +62,7 @@ class EmailViewHolder(
         binding.executePendingBindings()
     }
 
-    override fun onReboundOffsetChanged(
+    override fun onReboundOffSetChanged(
         currentSwipePercentage: Float,
         swipeThreshold: Float,
         currentTargetHasMetThresholdOnce: Boolean
