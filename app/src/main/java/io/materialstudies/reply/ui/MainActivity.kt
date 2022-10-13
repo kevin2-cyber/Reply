@@ -15,6 +15,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import com.google.android.material.transition.MaterialElevationScale
+import com.google.android.material.transition.MaterialSharedAxis
 import io.materialstudies.reply.R
 import io.materialstudies.reply.data.EmailStore
 import io.materialstudies.reply.databinding.ActivityMainBinding
@@ -260,7 +261,14 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun navigateToSearch() {
-        // TODO: Set up MaterialSharedAxis transition as exit and reenter transitions.
+        currentNavigationFragment?.apply {
+            exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true).apply {
+                duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+            }
+            reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false).apply {
+                duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+            }
+        }
         val directions = SearchFragmentDirections.actionGlobalSearchFragment()
         findNavController(R.id.nav_host_fragment).navigate(directions)
     }
