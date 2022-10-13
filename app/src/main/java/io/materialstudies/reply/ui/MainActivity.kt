@@ -14,6 +14,9 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
+import com.google.android.material.transition.MaterialElevationScale
+import com.google.android.material.transition.MaterialFadeThrough
+import com.google.android.material.transition.MaterialSharedAxis
 import io.materialstudies.reply.R
 import io.materialstudies.reply.data.EmailStore
 import io.materialstudies.reply.databinding.ActivityMainBinding
@@ -240,19 +243,37 @@ class MainActivity : AppCompatActivity(),
 
     fun navigateToHome(@StringRes titleRes: Int, mailbox: Mailbox) {
         binding.bottomAppBarTitle.text = getString(titleRes)
-        // TODO: Set up MaterialFadeThrough transition as exit transition.
+        currentNavigationFragment?.apply {
+            exitTransition = MaterialFadeThrough().apply {
+                duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+            }
+        }
         val directions = HomeFragmentDirections.actionGlobalHomeFragment(mailbox)
         findNavController(R.id.nav_host_fragment).navigate(directions)
     }
 
     private fun navigateToCompose() {
-        // TODO: Set up MaterialElevationScale transition as exit and reenter transitions.
+        currentNavigationFragment?.apply {
+            exitTransition = MaterialElevationScale(false).apply {
+                duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+            }
+            reenterTransition = MaterialElevationScale(true).apply {
+                duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+            }
+        }
         val directions = ComposeFragmentDirections.actionGlobalComposeFragment(currentEmailId)
         findNavController(R.id.nav_host_fragment).navigate(directions)
     }
 
     private fun navigateToSearch() {
-        // TODO: Set up MaterialSharedAxis transition as exit and reenter transitions.
+        currentNavigationFragment?.apply {
+            exitTransition = MaterialSharedAxis(MaterialSharedAxis.Z, true).apply {
+                duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+            }
+            reenterTransition = MaterialSharedAxis(MaterialSharedAxis.Z, false).apply {
+                duration = resources.getInteger(R.integer.reply_motion_duration_large).toLong()
+            }
+        }
         val directions = SearchFragmentDirections.actionGlobalSearchFragment()
         findNavController(R.id.nav_host_fragment).navigate(directions)
     }
