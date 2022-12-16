@@ -1,2 +1,2 @@
 # Reply
-An email sending app made with android
+An email sending app made with android(kotlin)
